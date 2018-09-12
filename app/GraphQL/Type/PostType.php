@@ -8,8 +8,10 @@
 
 namespace App\GraphQL\Type;
 
+use App\Post;
 use GraphQL\Type\Definition\Type;
 use Folklore\GraphQL\Support\Type as GraphQLType;
+use GraphQL;
 
 class PostType extends GraphQLType {
 
@@ -25,9 +27,12 @@ class PostType extends GraphQLType {
                 'type' => Type::nonNull(Type::id()),
                 'description' => 'The id of the post'
             ],
-            'user_id' => [
-                'type' => Type::nonNull(Type::id()),
-                'description' => 'The id of user of this post'
+            'user' => [
+                'type' => Type::getNullableType(GraphQL::type('User')),
+                'description' => 'The user of this post',
+                'resolve' => function (Post $post) {
+                    return $post->user()->first();
+                }
             ],
             'title' => [
                 'type' => Type::nonNull(Type::string()),
