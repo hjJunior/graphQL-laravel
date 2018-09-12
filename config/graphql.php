@@ -110,6 +110,7 @@ return [
     'schemas' => [
         'default' => [
             'query' => [
+                'users' => 'App\GraphQL\Query\UsersQuery'
             ],
             'mutation' => [
             ]
