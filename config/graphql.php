@@ -162,6 +162,7 @@ return [
      * ]
      */
     'types' => [
+        'User' => 'App\GraphQL\Type\UserType'
     ],
     /*
      * This callable will receive all the Exception objects that are caught by GraphQL.
