@@ -8,6 +8,7 @@
 
 namespace App\GraphQL\Type;
 
+use App\Post;
 use App\User;
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Type\Definition\Type;
@@ -48,11 +49,12 @@ class PostType extends GraphQLType {
         ];
     }
 
-    public function resolveUserField($root, $args, $context, ResolveInfo $info)
+    public function resolveUserField(Post $root, $args, $context, ResolveInfo $info)
     {
-        $fields = $info->getFieldSelection(3);
+        $fields = $info->getFieldSelection(1);
         $query = User::query();
-        $query->find($root->user->id);
+
+        $query->find(($root->user->id ?? 0));
         if ((isset($fields['posts_count']))) {
             $query->withCount('posts');
         }
