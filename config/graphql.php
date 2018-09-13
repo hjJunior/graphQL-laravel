@@ -114,6 +114,7 @@ return [
                 'posts' => 'App\GraphQL\Query\PostsQuery'
             ],
             'mutation' => [
+                'createNewPost' => 'App\GraphQL\Mutation\CreateNewPostMutation'
             ]
         ]
     ],
