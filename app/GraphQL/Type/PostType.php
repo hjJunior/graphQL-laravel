@@ -8,7 +8,8 @@
 
 namespace App\GraphQL\Type;
 
-use App\Post;
+use App\User;
+use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Type\Definition\Type;
 use Folklore\GraphQL\Support\Type as GraphQLType;
 use GraphQL;
@@ -29,10 +30,7 @@ class PostType extends GraphQLType {
             ],
             'user' => [
                 'type' => Type::getNullableType(GraphQL::type('User')),
-                'description' => 'The user of this post',
-                'resolve' => function (Post $post) {
-                    return $post->user()->first();
-                }
+                'description' => 'The user of this post'
             ],
             'title' => [
                 'type' => Type::nonNull(Type::string()),
@@ -48,6 +46,17 @@ class PostType extends GraphQLType {
             ],
 
         ];
+    }
+
+    public function resolveUserField($root, $args, $context, ResolveInfo $info)
+    {
+        $fields = $info->getFieldSelection(3);
+        $query = User::query();
+        $query->find($root->user->id);
+        if ((isset($fields['posts_count']))) {
+            $query->withCount('posts');
+        }
+        return $query->first()->toArray();
     }
 
 }
