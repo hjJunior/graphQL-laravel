@@ -9,6 +9,7 @@
 namespace App\GraphQL\Query;
 
 use GraphQL;
+use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Type\Definition\Type;
 use Folklore\GraphQL\Support\Query;
 use App\Post;
@@ -33,15 +34,17 @@ class PostsQuery extends Query {
         ];
     }
 
-    public function resolve($root, $args)
+    public function resolve($root, $args, $context, ResolveInfo $info)
     {
+        $posts = Post::query();
+
         if (isset($args['id'])) {
-            return Post::where('id' , $args['id'])->get();
-        } else if(isset($args['email'])) {
-            return Post::where('slug', $args['slug'])->get();
-        } else {
-            return Post::all();
+            $posts->where('id' , $args['id']);
         }
+        if(isset($args['email'])) {
+            $posts->where('slug', $args['slug']);
+        }
+        return $posts->get();
     }
 
 }
