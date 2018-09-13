@@ -28,10 +28,6 @@ class CreateNewPostMutation extends Mutation
     public function args()
     {
         return [
-            'user_id' => [
-                'type' => Type::nonNull(Type::id()),
-                'description' => 'The id of author'
-            ],
             'title' => [
                 'type' => Type::nonNull(Type::string()),
                 'description' => 'The title of post'
@@ -50,7 +46,6 @@ class CreateNewPostMutation extends Mutation
     public function rules()
     {
         return [
-            'user_id' => ['required', 'exists:users,id'],
             'title' => ['required', 'max:255', 'unique:posts'],
             'slug' => ['required', 'max:400', 'unique:posts'],
             'content' => ['required']
@@ -59,8 +54,13 @@ class CreateNewPostMutation extends Mutation
 
     public function resolve($root, $args)
     {
-        $post = new Post(collect($args)->only(['title', 'slug', 'content', 'user_id'])->toArray());
+        $post = new Post(collect($args)->only(['title', 'slug', 'content'])->toArray());
+        $post->user_id = auth('api')->id();
         $post->save();
         return $post;
+    }
+
+    public function authorize($root, $args) {
+        return auth('api')->check();
     }
 }
