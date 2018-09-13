@@ -49,6 +49,16 @@ class CreateNewPostMutation extends Mutation
         ];
     }
 
+    public function rules()
+    {
+        return [
+            'user_id' => ['required', 'exists:users,id'],
+            'title' => ['required', 'max:255', 'unique:posts'],
+            'slug' => ['required', 'max:400', 'unique:posts'],
+            'content' => ['required']
+        ];
+    }
+
     public function resolve($root, $args)
     {
         $post = new Post(collect($args)->only(['title', 'slug', 'content', 'user_id'])->toArray());
