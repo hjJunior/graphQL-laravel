@@ -12,7 +12,6 @@ use GraphQL;
 use GraphQL\Type\Definition\Type;
 use Folklore\GraphQL\Support\Mutation;
 use App\Post;
-use App\GraphQL\Type\PostType;
 
 
 class CreateNewPostMutation extends Mutation
@@ -28,7 +27,6 @@ class CreateNewPostMutation extends Mutation
 
     public function args()
     {
-        $postType = new PostType();
         return [
             'user_id' => [
                 'type' => Type::nonNull(Type::id()),
