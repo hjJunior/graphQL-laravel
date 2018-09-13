@@ -9,6 +9,7 @@
 namespace App\GraphQL\Query;
 
 use GraphQL;
+use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Type\Definition\Type;
 use Folklore\GraphQL\Support\Query;
 use App\User;
@@ -27,20 +28,31 @@ class UsersQuery extends Query {
     public function args()
     {
         return [
-            'id' => ['name' => 'id', 'type' => Type::string()],
+            'id' => ['name' => 'id', 'type' => Type::id()],
             'email' => ['name' => 'email', 'type' => Type::string()]
         ];
     }
 
-    public function resolve($root, $args)
+    public function resolve($root, $args, $context, ResolveInfo $info)
     {
-        if (isset($args['id'])) {
-            return User::where('id' , $args['id'])->get();
-        } else if(isset($args['email'])) {
-            return User::where('email', $args['email'])->get();
-        } else {
-            return User::all();
+        $fields = $info->getFieldSelection($depth = 3);
+        $users = User::query();
+
+        foreach ($fields as $field => $keys) {
+            if ($field === 'posts_count') {
+                $users->withCount('posts');
+            }
+            if ($field === 'posts') {
+                $users->with('posts');
+            }
         }
+
+        if (isset($args['id'])) {
+            return $users->where('id' , $args['id'])->get();
+        } else if(isset($args['email'])) {
+            return $users->where('email', $args['email'])->get();
+        }
+        return $users->get();
     }
 
 }

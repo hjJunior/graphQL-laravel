@@ -110,7 +110,8 @@ return [
     'schemas' => [
         'default' => [
             'query' => [
-                'users' => 'App\GraphQL\Query\UsersQuery'
+                'users' => 'App\GraphQL\Query\UsersQuery',
+                'posts' => 'App\GraphQL\Query\PostsQuery'
             ],
             'mutation' => [
             ]
@@ -163,7 +164,8 @@ return [
      * ]
      */
     'types' => [
-        'User' => 'App\GraphQL\Type\UserType'
+        'User' => 'App\GraphQL\Type\UserType',
+        'Post' => 'App\GraphQL\Type\PostType'
     ],
     /*
      * This callable will receive all the Exception objects that are caught by GraphQL.
